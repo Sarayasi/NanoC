@@ -1,0 +1,24 @@
+data int8 
+    int inactivo = 1 
+    int activo = 2 
+    int pausado = 3 
+    int destruido = 4 
+data Config 
+    int nivel_basico 
+    int nivel_maximo 
+    float gravedad 
+    String32 nombre_juego 
+    bool debug 
+data Mapa 
+    int id_del_nivel 
+    String32 nombre 
+    float dificultad 
+    
+    void Verificar ( ) 
+        id_del_nivel = 6 
+
+data int8 
+    inactivo = 0 
+    activo = 1 
+    pausado = 2 
+    destruido = 3 

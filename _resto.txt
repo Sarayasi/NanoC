@@ -1,0 +1,8 @@
+int int8 . inactivo = 1 
+int int8 . activo = 2 
+int int8 . pausado = 3 
+int int8 . destruido = 4 
+void Esperar ( ) 
+    Wait ( 500 ) 
+void Mapa . Verificar ( ) 
+    id_del_nivel = 6 

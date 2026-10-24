@@ -1,0 +1,191 @@
+enum Estado 
+    inactivo 
+    activo 
+    pausado 
+    destruido 
+data Estado 
+    int inactivo = 1 
+    int activo = 2 
+    int pausado = 3 
+    int destruido = 4 
+
+int Estado . inactivo = 1 
+int Estado . activo = 2 
+int Estado . pausado = 3 
+int Estado . destruido = 4 
+
+void Esperar ( ) 
+    Wait ( 500 ) 
+
+data Config 
+    int nivel_basico 
+    int nivel_maximo 
+    float gravedad 
+    String32 nombre_juego 
+    bool debug 
+
+data Mapa 
+    int id_del_nivel 
+    String32 nombre 
+    float dificultad 
+    
+    void Verificar ( ) 
+        id_del_nivel = 6 
+void Mapa . Verificar ( ) 
+    id_del_nivel = 6 
+
+struct Vector2 
+    float x 
+    float y 
+
+struct Vector3 
+    float x 
+    float y 
+    float z 
+
+struct Entidad 
+    int id 
+    Vector2 posicion 
+    Vector3 rotacion 
+    bool visible 
+
+    void Mover ( float dx , float dy ) 
+        posicion . x = posicion . x + dx 
+        posicion . y = posicion . y + dy 
+
+    bool EstaVisible ( ) 
+        return visible 
+
+struct Personaje : Entidad 
+    int nivel 
+    bool vivo 
+    String8 nombre 
+    String8 apellido 
+    float edad 
+    String64 descripcion 
+    Estado estado 
+    Vector2 velocidad 
+
+    void Start ( ) 
+        vivo = true 
+        estado = Estado . activo 
+        nivel = Config . nivel_basico 
+        velocidad . x = 0 . 0 
+        velocidad . y = 0 . 0 
+
+    void Update ( float dt ) 
+        if vivo == true 
+            nivel = Mapa . id_del_nivel + 1 
+            velocidad . y = velocidad . y - Config . gravedad * dt 
+            Mover ( velocidad . x * dt , velocidad . y * dt ) 
+
+            if nivel > Config . nivel_maximo 
+                nivel = Config . nivel_maximo 
+        else 
+            estado = Estado . inactivo 
+
+    void Damage ( int cantidad ) 
+        if cantidad <= 0 
+            return 
+
+        edad = edad - cantidad 
+
+        if edad <= 0 . 0 
+            Destroy ( ) 
+        else 
+            estado = Estado . pausado 
+
+    void Destroy ( ) 
+        vivo = false 
+        estado = Estado . destruido 
+        visible = false 
+
+    String8 ObtenerNombreCompleto ( ) 
+        String8 resultado 
+        resultado = nombre +   + apellido 
+        return resultado 
+
+    bool EsAdulto ( ) 
+        return edad >= 18 . 0 
+
+struct Inventario 
+    int capacidad 
+    int cantidad_actual 
+    Personaje duenio 
+    bool abierto 
+
+    void Agregar ( int item_id ) 
+        if cantidad_actual < capacidad 
+            cantidad_actual = cantidad_actual + 1 
+
+    void Quitar ( int item_id ) 
+        if cantidad_actual > 0 
+            cantidad_actual = cantidad_actual - 1 
+
+    bool EstaLleno ( ) 
+        return cantidad_actual >= capacidad 
+
+    void Vaciar ( ) 
+        cantidad_actual = 0 
+
+struct Juego 
+    Config config 
+    Mapa mapa 
+    Personaje jugador 
+    Inventario inventario 
+
+    void Inicializar ( ) 
+        config . nivel_basico = 1 
+        config . nivel_maximo = 99 
+        config . gravedad = 9 . 8 
+        config . nombre_juego = Mi Juego 
+        config . debug = false 
+
+        mapa . id_del_nivel = 1 
+        mapa . nombre = Nivel Inicial 
+        mapa . dificultad = 1 . 5 
+
+        jugador . nombre = Juan 
+        jugador . apellido = Perez 
+        jugador . edad = 25 . 0 
+        jugador . Start ( ) 
+
+        inventario . capacidad = 20 
+        inventario . cantidad_actual = 0 
+        inventario . duenio = jugador 
+        inventario . abierto = false 
+
+    void Tick ( float dt ) 
+        jugador . Update ( dt ) 
+
+        if jugador . vivo == false 
+            Reiniciar ( ) 
+
+    void Reiniciar ( ) 
+        jugador = Personaje 
+        jugador . Start ( ) 
+        inventario . Vaciar ( ) 
+
+    void Loop ( ) 
+        float dt = 0 . 016 
+        int contador = 0 
+
+        while jugador . vivo == true 
+            Tick ( dt ) 
+            contador = contador + 1 
+
+            if contador > 1000 
+                break 
+
+        for int i = 0 ; i < 10 ; i = i + 1 
+            jugador . Damage ( 1 ) 
+
+    int CalcularPuntaje ( ) 
+        int puntaje = 0 
+        puntaje = jugador . nivel * 100 
+        puntaje = puntaje + inventario . cantidad_actual * 10 
+
+        if jugador . EsAdulto ( ) == true 
+            puntaje = puntaje + 50 
+
+        return puntaje 

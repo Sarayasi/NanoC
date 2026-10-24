@@ -1,0 +1,5 @@
+enum Estado 
+    inactivo 
+    activo 
+    pausado 
+    destruido 
